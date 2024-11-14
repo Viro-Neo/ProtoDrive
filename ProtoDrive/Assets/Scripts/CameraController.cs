@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour
     private float distance = 3;
     private float height = 1.5f;
 
-    private float smoothTime = 0.25f;
+    private float smoothTime = 0.9f;
     Vector3 currentVelocity;
 
     void LateUpdate()
