@@ -4,26 +4,26 @@ using UnityEngine;
 
 public class CarController : MonoBehaviour
 {
-public float motorTorque = 2000;
+    public float motorTorque = 2000;
     public float brakeTorque = 2000;
     public float maxSpeed = 20;
     public float steeringRange = 30;
     public float steeringRangeAtMaxSpeed = 10;
     public float centreOfGravityOffset = -1f;
 
-    WheelControl[] wheels;
-    Rigidbody rigidBody;
+    private WheelControl[] _wheels;
+    private Rigidbody _rb;
 
     // Start is called before the first frame update
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
 
         // Adjust center of mass vertically, to help prevent the car from rolling
-        rigidBody.centerOfMass += Vector3.up * centreOfGravityOffset;
+        _rb.centerOfMass += Vector3.up * centreOfGravityOffset;
 
         // Find all child GameObjects that have the WheelControl script attached
-        wheels = GetComponentsInChildren<WheelControl>();
+        _wheels = GetComponentsInChildren<WheelControl>();
     }
 
     // Update is called once per frame
@@ -35,7 +35,7 @@ public float motorTorque = 2000;
 
         // Calculate current speed in relation to the forward direction of the car
         // (this returns a negative number when traveling backwards)
-        float forwardSpeed = Vector3.Dot(transform.forward, rigidBody.velocity);
+        float forwardSpeed = Vector3.Dot(transform.forward, _rb.velocity);
 
 
         // Calculate how close the car is to top speed
@@ -54,7 +54,7 @@ public float motorTorque = 2000;
         // as the car's velocity
         bool isAccelerating = Mathf.Sign(vInput) == Mathf.Sign(forwardSpeed);
 
-        foreach (var wheel in wheels)
+        foreach (var wheel in _wheels)
         {
             // Apply steering to Wheel colliders that have "Steerable" enabled
             if (wheel.steerable)
