@@ -1,60 +1,63 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class CameraController : MonoBehaviour {
-
+public class CameraController : MonoBehaviour
+{
 	public Transform car;
-	private float distance = 7f;
+	public Rigidbody rb;
+	public Camera cam;
+	
+	const float Distance = 7f;
 	public float height = 1.4f;
 	public float rotationDamping = 3.0f;
 	public float heightDamping = 2.0f;
 	public float zoomRatio = 0.5f;
 	public float defaultFOV = 60f;
 
-	private Vector3 rotationVector;
+	private Vector3 _rotationVector;
 
-	void LateUpdate(){
-		float wantedAngle = rotationVector.y;
+	void LateUpdate()
+	{
+		float wantedAngle = _rotationVector.y;
 		float wantedHeight = car.position.y + height;
 		float myAngle = transform.eulerAngles.y;
 		float myHeight = transform.position.y;
 
-        myAngle = Mathf.LerpAngle(myAngle, wantedAngle, rotationDamping*Time.deltaTime);
-        myHeight = Mathf.Lerp(myHeight, wantedHeight, heightDamping*Time.deltaTime);
+		myAngle = Mathf.LerpAngle(myAngle, wantedAngle, rotationDamping * Time.deltaTime);
+		myHeight = Mathf.Lerp(myHeight, wantedHeight, heightDamping * Time.deltaTime);
 
-        // set camera rotation
+		// set camera rotation
 		Quaternion currentRotation = Quaternion.Euler(0, myAngle, 0);
 
-        // set camera position
+		// set camera position
 		transform.position = car.position;
-		transform.position -= currentRotation * Vector3.forward*distance;
+		transform.position -= currentRotation * Vector3.forward * Distance;
 
-		Vector3 temp = transform.position; //temporary variable so Unity doesn't complain
+		Vector3 temp = transform.position;
 		temp.y = myHeight;
 		transform.position = temp;
 		transform.LookAt(car);
 	}
 
-	void FixedUpdate(){
-		Vector3 localVelocity = car.InverseTransformDirection(car.GetComponent<Rigidbody>().velocity);
+	void FixedUpdate()
+	{
+		Vector3 localVelocity = car.InverseTransformDirection(rb.velocity);
 
-        // if the car is moving backwards, reverse the camera
+		// if the car is moving backwards, reverse the camera
 		if (localVelocity.z < -0.1f)
-        {
-			Vector3 temp = rotationVector; //because temporary variables seem to be removed after a closing bracket "}" we can use the same variable name multiple times.
+		{
+			Vector3 temp = _rotationVector; 
 			temp.y = car.eulerAngles.y + 180;
-			rotationVector = temp;
+			_rotationVector = temp;
 		}
 		else
-        {
-			Vector3 temp = rotationVector;
+		{
+			Vector3 temp = _rotationVector;
 			temp.y = car.eulerAngles.y;
-			rotationVector = temp;
+			_rotationVector = temp;
 		}
 
-        // zoom in/out depending on the car's speed
-		float acc = car.GetComponent<Rigidbody>().velocity.magnitude;
-		GetComponent<Camera>().fieldOfView = defaultFOV + acc * zoomRatio * Time.deltaTime;  //he removed * Time.deltaTime but it works better if you leave it like this.
+		// zoom in/out depending on the car's speed
+		float acc = rb.velocity.magnitude;
+		cam.fieldOfView = defaultFOV + acc * zoomRatio * Time.deltaTime;
 	}
-}﻿
+}
