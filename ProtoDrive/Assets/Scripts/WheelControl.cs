@@ -2,10 +2,9 @@ using UnityEngine;
 
 public class WheelControl : MonoBehaviour
 {
-    public Transform wheelModel;
-
-    [HideInInspector] 
-    public WheelCollider WheelCollider;
+    [HideInInspector]
+    public WheelCollider wheelCollider;
+    private Transform _wheelModel;
     
     public bool steerable;
     public bool motorized;
@@ -15,13 +14,14 @@ public class WheelControl : MonoBehaviour
 
     private void Start()
     {
-        WheelCollider = GetComponent<WheelCollider>();
+        wheelCollider = GetComponent<WheelCollider>();
+        _wheelModel = transform.GetChild(0);
     }
 
     private void Update()
     {
-        WheelCollider.GetWorldPose(out _position, out _rotation);
-        wheelModel.transform.position = _position;
-        wheelModel.transform.rotation = _rotation;
+        wheelCollider.GetWorldPose(out _position, out _rotation);
+        _wheelModel.transform.position = _position;
+        _wheelModel.transform.rotation = _rotation;
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CarController : MonoBehaviour
@@ -14,7 +12,6 @@ public class CarController : MonoBehaviour
     private WheelControl[] _wheels;
     private Rigidbody _rb;
 
-    // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -29,15 +26,13 @@ public class CarController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         float vInput = Input.GetAxis("Vertical");
         float hInput = Input.GetAxis("Horizontal");
 
         // Calculate current speed in relation to the forward direction of the car
         // (this returns a negative number when traveling backwards)
         float forwardSpeed = Vector3.Dot(transform.forward, _rb.velocity);
-
-
+        
         // Calculate how close the car is to top speed
         // as a number from zero to one
         float speedFactor = Mathf.InverseLerp(0, maxSpeed, forwardSpeed);
@@ -59,7 +54,7 @@ public class CarController : MonoBehaviour
             // Apply steering to Wheel colliders that have "Steerable" enabled
             if (wheel.steerable)
             {
-                wheel.WheelCollider.steerAngle = hInput * currentSteerRange;
+                wheel.wheelCollider.steerAngle = hInput * currentSteerRange;
             }
 
             if (isAccelerating)
@@ -67,16 +62,16 @@ public class CarController : MonoBehaviour
                 // Apply torque to Wheel colliders that have "Motorized" enabled
                 if (wheel.motorized)
                 {
-                    wheel.WheelCollider.motorTorque = vInput * currentMotorTorque;
+                    wheel.wheelCollider.motorTorque = vInput * currentMotorTorque;
                 }
-                wheel.WheelCollider.brakeTorque = 0;
+                wheel.wheelCollider.brakeTorque = 0;
             }
             else
             {
                 // If the user is trying to go in the opposite direction
                 // apply brakes to all wheels
-                wheel.WheelCollider.brakeTorque = Mathf.Abs(vInput) * brakeTorque;
-                wheel.WheelCollider.motorTorque = 0;
+                wheel.wheelCollider.brakeTorque = Mathf.Abs(vInput) * brakeTorque;
+                wheel.wheelCollider.motorTorque = 0;
             }
         }
     }
