@@ -6,7 +6,6 @@ public class WheelControl : MonoBehaviour
     public WheelCollider wheelCollider;
     private Transform _wheelModel;
     
-    public bool steerable;
     public bool motorized;
 
     private Vector3 _position;
