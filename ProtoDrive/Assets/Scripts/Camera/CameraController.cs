@@ -40,7 +40,7 @@ public class CameraController : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		Vector3 localVelocity = car.InverseTransformDirection(rb.velocity);
+		Vector3 localVelocity = car.InverseTransformDirection(rb.linearVelocity);
 
 		// if the car is moving backwards, reverse the camera
 		if (localVelocity.z < -0.1f)
@@ -57,7 +57,7 @@ public class CameraController : MonoBehaviour
 		}
 
 		// zoom in/out depending on the car's speed
-		float acc = rb.velocity.magnitude;
+		float acc = rb.linearVelocity.magnitude;
 		cam.fieldOfView = defaultFOV + acc * zoomRatio * Time.deltaTime;
 	}
 }

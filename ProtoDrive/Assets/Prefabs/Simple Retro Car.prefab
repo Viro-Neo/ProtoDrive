@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 362965439449395010}
   - component: {fileID: 6488382798318160214}
   - component: {fileID: 8613805848890782243}
+  - component: {fileID: 5758287840201910452}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -63,6 +64,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -132,6 +136,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.5398812, y: 0.86250114, z: 2.0039222}
   m_Center: {x: 0.04441023, y: 0.8571094, z: -0.11057603}
+--- !u!114 &5758287840201910452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 856010397561069376}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a990030bdd2930f409fa76b758101ffc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1253460172470143046
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,6 +206,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -258,7 +277,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2046832225273221063}
   serializedVersion: 4
-  m_Mass: 1090
+  m_Mass: 1170
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -270,7 +289,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -350,6 +369,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2150923685402794755}
   - component: {fileID: 6679619682891649159}
+  - component: {fileID: 3642139244552205068}
   m_Layer: 0
   m_Name: Dashboard
   m_TagString: Untagged
@@ -373,6 +393,18 @@ Transform:
   m_Father: {fileID: 6555173749586326909}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6679619682891649159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088846413231051112}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e563a05750cb0e4a85c4c398c8a810b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3642139244552205068
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -442,6 +474,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -525,6 +560,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -668,8 +706,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 116c510a97b40814d937e192bff5c4b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftWheel: {fileID: 0}
-  rightWheel: {fileID: 0}
 --- !u!1 &5838763986513155769
 GameObject:
   m_ObjectHideFlags: 0
@@ -728,6 +764,9 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -799,8 +838,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ba17509354ed5544852a4b487499fd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftWheel: {fileID: 0}
-  rightWheel: {fileID: 0}
 --- !u!1 &6717270663351037698
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,6 +991,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7862994462966843304}
+  - component: {fileID: 6990784940633772704}
   m_Layer: 0
   m_Name: Drivetrain
   m_TagString: Untagged
@@ -976,6 +1014,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6555173749586326909}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6990784940633772704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8796150195831839474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2761773305c83704cb0baaf69cbb523c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9170916169522828709
 GameObject:
   m_ObjectHideFlags: 0

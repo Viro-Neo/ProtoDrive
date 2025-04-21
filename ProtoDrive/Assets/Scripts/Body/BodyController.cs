@@ -9,7 +9,7 @@ public class BodyController : MonoBehaviour
     {
         _rb = GetComponentInParent<Rigidbody>();
         
-        // Adjust center of mass vertically, to help prevent the car from rolling
+        // Adjust the center of mass vertically to help prevent the car from rolling
         _rb.centerOfMass += Vector3.up * CentreOfGravityOffset;
     }
 }

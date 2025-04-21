@@ -1,19 +1,21 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class EngineController : MonoBehaviour
 {
+    [Header("Engine Settings")]
     private AnimationCurve _torqueCurve;
     private const float MaxRpm = 6000;
     private const float IdleRpm = 750;
     private const float EngineInertia = 0.15f;
-    private const float AccelerationRate = 5000f;
     private const float DecelerationRate = 2000f;
-    
-    public static float currentRpm;
-    private float _targetRpm;
-    private float _currentTorque;
-    private float _throttleInput;
 
+    public static float currentRpm;
+    public static float currentTorque;
+
+    private float _targetRpm;
+    private float _throttleInput;
+    private float _accelerationRate;
 
     private void Start()
     {
@@ -27,21 +29,16 @@ public class EngineController : MonoBehaviour
         
         if (_throttleInput > 0) {
             // Increase RPM based on acceleration & torque curve
-            _currentTorque = _torqueCurve.Evaluate(currentRpm);
-            _targetRpm = currentRpm + (_currentTorque * _throttleInput * AccelerationRate * Time.deltaTime);
+            currentTorque = _torqueCurve.Evaluate(currentRpm);
+            _accelerationRate = currentTorque / EngineInertia;
+            _targetRpm = currentRpm + (currentTorque * _throttleInput * _accelerationRate * Time.deltaTime);
         } else {
             // Decelerate RPM when throttle is released
-            _targetRpm = currentRpm - (DecelerationRate * Time.deltaTime);
+            _targetRpm = currentRpm - DecelerationRate * Time.deltaTime;
         }
 
         // Prevent RPM from dropping below idle
         _targetRpm = Mathf.Max(_targetRpm, IdleRpm);
-
-        // // Calculate wheel-based RPM (if in gear)
-        // if (currentGear > 0) {
-        //     float wheelRPM = (wheelSpeed * 60) * gearRatios[currentGear - 1] * finalDriveRatio;
-        //     targetRPM = Mathf.Max(targetRPM, wheelRPM);
-        // }
 
         // Apply smoothing using inertia
         currentRpm = Mathf.Lerp(currentRpm, _targetRpm, EngineInertia);

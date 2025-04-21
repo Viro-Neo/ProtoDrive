@@ -21,7 +21,7 @@ public class CarController : MonoBehaviour
 
         // Calculate current speed in relation to the forward direction of the car
         // (this returns a negative number when traveling backwards)
-        float forwardSpeed = transform.InverseTransformDirection(GetComponent<Rigidbody>().velocity).z;
+        float forwardSpeed = transform.InverseTransformDirection(GetComponent<Rigidbody>().linearVelocity).z;
         
         // Calculate how close the car is to top speed
         // as a number from zero to one

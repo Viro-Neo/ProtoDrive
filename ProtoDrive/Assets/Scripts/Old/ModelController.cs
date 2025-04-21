@@ -81,7 +81,7 @@ public class ModelController : MonoBehaviour
         _wheelForce = _wheelTorque / WheelRadius;
         
         // Apply throttle if the user input is in the same direction as the car's velocity
-        if (Mathf.Sign(throttleInput) == Mathf.Sign(_rb.velocity.z))
+        if (Mathf.Sign(throttleInput) == Mathf.Sign(_rb.linearVelocity.z))
         {
             foreach (var wheel in _driveWheels)
             {
