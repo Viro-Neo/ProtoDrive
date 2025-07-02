@@ -59,7 +59,7 @@ public class CarController : MonoBehaviour
     {
         UpdateWheelMeshes();
 
-        _speedText.text = $"{_currentSpeed:F0} km/h";
+        _speedText.text = $"{_currentSpeed:F0} ku/h";
         _gearText.text = _isReversing ? "R" : (_currentGear + 1).ToString();
     }
 
@@ -78,10 +78,7 @@ public class CarController : MonoBehaviour
 
         HandleShifting(vInput);
 
-        // Steering
-        float steer = MaxSteerAngle * hInput;
-        _wheelColliders[0].steerAngle = steer;
-        _wheelColliders[1].steerAngle = steer;
+        HandleSteering(hInput);
 
         // Decide whether to brake
         bool wantsToBrake = (vInput < 0 && !_isReversing) || (vInput > 0 && _isReversing);
@@ -186,6 +183,18 @@ public class CarController : MonoBehaviour
                 _currentGear--; // Shift down
             }
         }
+    }
+
+    private void HandleSteering(float hInput)
+    {
+        // Adjust steering angle based on speed
+        float speedFactor = Mathf.Clamp01(_currentSpeed / 100f); // Normalize between 0 (0 km/h) and 1 (100 km/h+)
+        float adjustedSteerAngle = MaxSteerAngle * (1f - 0.7f * speedFactor); // Reduce up to 70% at high speed
+
+        float steer = adjustedSteerAngle * hInput;
+
+        _wheelColliders[0].steerAngle = steer;
+        _wheelColliders[1].steerAngle = steer;
     }
 
     // Initialization Methods
