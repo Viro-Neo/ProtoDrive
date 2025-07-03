@@ -2,62 +2,50 @@
 
 public class CameraController : MonoBehaviour
 {
-	public Transform car;
-	public Rigidbody rb;
-	public Camera cam;
-	
-	const float Distance = 7f;
-	public float height = 1.4f;
-	public float rotationDamping = 3.0f;
-	public float heightDamping = 2.0f;
-	public float zoomRatio = 0.5f;
-	public float defaultFOV = 60f;
+	public Transform carTransform;
+	public Rigidbody carRb;
 
-	private Vector3 _rotationVector;
+	[Header("Camera Settings")]
+	[Range(3f, 7f)]
+	public float followDistance = 3f; // Distance behind the car
+	[Range(1f, 2f)]
+	public float followHeight = 1.5f; // Height above the car
+	public float followDamping = 7f; // Damping for smooth following
+	[Range(2f, 7f)]
+	public float rotationDamping = 2f; // Damping for smooth rotation
 
-	void LateUpdate()
+	private Vector3 _targetPosition;
+	private Quaternion _targetRotation;
+	private Vector3 _velocity = Vector3.zero;
+
+	private void Start()
 	{
-		float wantedAngle = _rotationVector.y;
-		float wantedHeight = car.position.y + height;
-		float myAngle = transform.eulerAngles.y;
-		float myHeight = transform.position.y;
-
-		myAngle = Mathf.LerpAngle(myAngle, wantedAngle, rotationDamping * Time.deltaTime);
-		myHeight = Mathf.Lerp(myHeight, wantedHeight, heightDamping * Time.deltaTime);
-
-		// set camera rotation
-		Quaternion currentRotation = Quaternion.Euler(0, myAngle, 0);
-
-		// set camera position
-		transform.position = car.position;
-		transform.position -= currentRotation * Vector3.forward * Distance;
-
-		Vector3 temp = transform.position;
-		temp.y = myHeight;
-		transform.position = temp;
-		transform.LookAt(car);
+		carRb.interpolation = RigidbodyInterpolation.Interpolate;
 	}
 
-	void FixedUpdate()
+	private void LateUpdate()
 	{
-		Vector3 localVelocity = car.InverseTransformDirection(rb.linearVelocity);
+		UpdateCameraPosition();
+		UpdateCameraRotation();
+		transform.LookAt(carTransform);
+	}
 
-		// if the car is moving backwards, reverse the camera
-		if (localVelocity.z < -0.1f)
+	private void UpdateCameraPosition()
+	{
+		Vector3 velocity = carRb.linearVelocity;
+		Vector3 direction = carTransform.forward;
+		if (Vector3.Dot(carTransform.forward, velocity) < -1)
 		{
-			Vector3 temp = _rotationVector; 
-			temp.y = car.eulerAngles.y + 180;
-			_rotationVector = temp;
-		}
-		else
-		{
-			Vector3 temp = _rotationVector;
-			temp.y = car.eulerAngles.y;
-			_rotationVector = temp;
+			direction = -carTransform.forward;
 		}
 
-		// zoom in/out depending on the car's speed
-		float acc = rb.linearVelocity.magnitude;
-		cam.fieldOfView = defaultFOV + acc * zoomRatio * Time.deltaTime;
+		_targetPosition = carTransform.position - direction * followDistance + Vector3.up * followHeight;
+		transform.position = Vector3.Lerp(transform.position, _targetPosition, followDamping * Time.deltaTime);
+	}
+
+	private void UpdateCameraRotation()
+	{
+		_targetRotation = Quaternion.LookRotation(carTransform.position - transform.position, Vector3.up);
+		transform.rotation = Quaternion.Slerp(transform.rotation, _targetRotation, rotationDamping * Time.deltaTime);
 	}
 }

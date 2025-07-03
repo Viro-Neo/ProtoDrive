@@ -771,14 +771,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c6be0e5fbc9b2c429a165e0569af257, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  car: {fileID: 1400477054}
-  rb: {fileID: 1400477055}
-  cam: {fileID: 963194227}
-  height: 1.3
-  rotationDamping: 3
-  heightDamping: 2
-  zoomRatio: 0.5
-  defaultFOV: 60
+  carTransform: {fileID: 1400477054}
+  carRb: {fileID: 1400477055}
+  followDistance: 5
+  followHeight: 1.5
+  followDamping: 7
+  rotationDamping: 2
 --- !u!4 &1400477054 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2018528455969075804, guid: a38d53f5b87b9ed4388c0e6c209eb6ea, type: 3}

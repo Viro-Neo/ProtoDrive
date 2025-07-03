@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CarController : MonoBehaviour
 {
@@ -36,7 +35,6 @@ public class CarController : MonoBehaviour
 
     [SerializeField] private DriveType driveType;
 
-    private readonly float[] _brakeTorqueRatio = { 0.7f, 0.3f };  // brakeTorqueRatio[0] for front wheels, brakeTorqueRatio[1] for rear wheels
     private float _currentSpeed;
 
     private void Start()
@@ -146,10 +144,10 @@ public class CarController : MonoBehaviour
     {
         if (applyBrake)
         {
-            _wheelColliders[0].brakeTorque = BrakeTorque * _brakeTorqueRatio[0];
-            _wheelColliders[1].brakeTorque = BrakeTorque * _brakeTorqueRatio[0];
-            _wheelColliders[2].brakeTorque = BrakeTorque * _brakeTorqueRatio[1];
-            _wheelColliders[3].brakeTorque = BrakeTorque * _brakeTorqueRatio[1];
+            _wheelColliders[0].brakeTorque = BrakeTorque;
+            _wheelColliders[1].brakeTorque = BrakeTorque;
+            _wheelColliders[2].brakeTorque = BrakeTorque;
+            _wheelColliders[3].brakeTorque = BrakeTorque;
         }
         else
         {
