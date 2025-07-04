@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CarController : MonoBehaviour
 {
@@ -27,7 +26,7 @@ public class CarController : MonoBehaviour
     private int _currentGear;
     private bool _isReversing;
 
-    public enum DriveType
+    private enum DriveType
     {
         FrontWheelDrive,
         RearWheelDrive,
@@ -36,7 +35,6 @@ public class CarController : MonoBehaviour
 
     [SerializeField] private DriveType driveType;
 
-    private readonly float[] _brakeTorqueRatio = { 0.7f, 0.3f };  // brakeTorqueRatio[0] for front wheels, brakeTorqueRatio[1] for rear wheels
     private float _currentSpeed;
 
     private void Start()
@@ -57,106 +55,106 @@ public class CarController : MonoBehaviour
 
     private void Update()
     {
-        HandleInput();
         UpdateWheelMeshes();
 
-        // Update speed display
-        _currentSpeed = _rb.linearVelocity.magnitude * 3.6f; // Convert to km/h
         _speedText.text = $"{_currentSpeed:F0} ku/h";
-
-        // Update gear display
-        if (_isReversing)
-        {
-            _gearText.text = "R";
-        }
-        else
-        {
-            _gearText.text = (_currentGear + 1).ToString();
-        }
+        _gearText.text = _isReversing ? "R" : (_currentGear + 1).ToString();
     }
 
-    private void HandleInput()
+
+    private void FixedUpdate()
+    {
+        HandlePhysics();
+    }
+
+    private void HandlePhysics()
     {
         float vInput = Input.GetAxis("Vertical");
-        float motor;
+        float hInput = Input.GetAxis("Horizontal");
+
+        _currentSpeed = _rb.linearVelocity.magnitude * 3.6f;
 
         HandleShifting(vInput);
 
-        if (_isReversing)
-        {
-            motor = EngineTorque * ReverseRatio * Mathf.Clamp(vInput, -1f, 0f);
-        }
-        else
-        {
-            motor = EngineTorque * _forwardRatio[_currentGear] * FinalDriveRatio * Mathf.Clamp(vInput, 0f, 1f);
-        }
+        HandleSteering(hInput);
 
-        // Apply motor torque based on drive type
-        switch (driveType)
-        {
-            case DriveType.FrontWheelDrive:
-                _wheelColliders[0].motorTorque = motor / 2; // Distribute torque evenly
-                _wheelColliders[1].motorTorque = motor / 2;
-                break;
-            case DriveType.RearWheelDrive:
-                _wheelColliders[2].motorTorque = motor / 2; // Distribute torque evenly
-                _wheelColliders[3].motorTorque = motor / 2;
-                break;
-            case DriveType.AllWheelDrive:
-                foreach (var wheel in _wheelColliders)
-                {
-                    wheel.motorTorque = motor / 4; // Distribute torque evenly
-                }
-                break;
-        }
+        // Decide whether to brake
+        bool wantsToBrake = (vInput < 0 && !_isReversing) || (vInput > 0 && _isReversing);
+        float motor = 0f;
 
-        HandleSteering();
-
-        // Apply brakes
-        if (vInput < 0 && !_isReversing || vInput > 0 && _isReversing)
+        if (!wantsToBrake)
         {
-            _wheelColliders[0].brakeTorque = BrakeTorque * _brakeTorqueRatio[0];
-            _wheelColliders[1].brakeTorque = BrakeTorque * _brakeTorqueRatio[0];
-            _wheelColliders[2].brakeTorque = BrakeTorque * _brakeTorqueRatio[1];
-            _wheelColliders[3].brakeTorque = BrakeTorque * _brakeTorqueRatio[1];
-        }
-        else
-        {
-            foreach (var wheel in _wheelColliders)
+            if (_isReversing)
             {
-                wheel.brakeTorque = 0;
+                motor = EngineTorque * ReverseRatio * Mathf.Clamp(vInput, -1f, 0f);
+            }
+            else
+            {
+                motor = EngineTorque * _forwardRatio[_currentGear] * FinalDriveRatio * Mathf.Clamp(vInput, 0f, 1f);
             }
         }
 
-        HandleHandbrake();
+        // Distribute motor torque based on drive type
+        ApplyMotorTorque(motor);
 
-        // Limit speed
-        _currentSpeed = _rb.linearVelocity.magnitude * 3.6f; // Convert to km/h
-        if (_currentSpeed > MaxSpeed)
-        {
-            _rb.linearVelocity = _rb.linearVelocity.normalized * MaxSpeed / 3.6f; // Convert back to m/s
-        }
-    }
+        // Apply braking
+        ApplyBraking(wantsToBrake);
 
-    private void HandleSteering()
-    {
-        float steer = MaxSteerAngle * Input.GetAxis("Horizontal");
-        _wheelColliders[0].steerAngle = steer;
-        _wheelColliders[1].steerAngle = steer;
-    }
-
-    private void HandleHandbrake()
-    {
+        // Apply handbrake
         if (Input.GetKey(KeyCode.Space))
         {
-            // Handbrake
             _wheelColliders[2].brakeTorque = BrakeTorque;
             _wheelColliders[3].brakeTorque = BrakeTorque;
         }
         else
         {
-            _wheelColliders[2].brakeTorque = 0;
-            _wheelColliders[3].brakeTorque = 0;
+            _wheelColliders[2].brakeTorque = 0f;
+            _wheelColliders[3].brakeTorque = 0f;
+        }
+
+        // Clamp speed
+        if (_currentSpeed > MaxSpeed)
+        {
+            _rb.linearVelocity = _rb.linearVelocity.normalized * MaxSpeed / 3.6f;
+        }
+    }
+
+    private void ApplyMotorTorque(float motor)
+    {
+        switch (driveType)
+        {
+            case DriveType.FrontWheelDrive:
+                _wheelColliders[0].motorTorque = motor / 2;
+                _wheelColliders[1].motorTorque = motor / 2;
+                break;
+            case DriveType.RearWheelDrive:
+                _wheelColliders[2].motorTorque = motor / 2;
+                _wheelColliders[3].motorTorque = motor / 2;
+                break;
+            case DriveType.AllWheelDrive:
+                foreach (var wheel in _wheelColliders)
+                {
+                    wheel.motorTorque = motor / 4;
+                }
+                break;
+        }
+    }
+
+    private void ApplyBraking(bool applyBrake)
+    {
+        if (applyBrake)
+        {
+            _wheelColliders[0].brakeTorque = BrakeTorque;
+            _wheelColliders[1].brakeTorque = BrakeTorque;
+            _wheelColliders[2].brakeTorque = BrakeTorque;
+            _wheelColliders[3].brakeTorque = BrakeTorque;
+        }
+        else
+        {
+            foreach (var wheel in _wheelColliders)
+            {
+                wheel.brakeTorque = 0f;
+            }
         }
     }
 
@@ -183,6 +181,18 @@ public class CarController : MonoBehaviour
                 _currentGear--; // Shift down
             }
         }
+    }
+
+    private void HandleSteering(float hInput)
+    {
+        // Adjust steering angle based on speed
+        float speedFactor = Mathf.Clamp01(_currentSpeed / 100f); // Normalize between 0 (0 km/h) and 1 (100 km/h+)
+        float adjustedSteerAngle = MaxSteerAngle * (1f - 0.7f * speedFactor); // Reduce up to 70% at high speed
+
+        float steer = adjustedSteerAngle * hInput;
+
+        _wheelColliders[0].steerAngle = steer;
+        _wheelColliders[1].steerAngle = steer;
     }
 
     // Initialization Methods
