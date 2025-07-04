@@ -16,7 +16,6 @@ public class CameraController : MonoBehaviour
 
 	private Vector3 _targetPosition;
 	private Quaternion _targetRotation;
-	private Vector3 _velocity = Vector3.zero;
 
 	private void Start()
 	{
@@ -32,15 +31,26 @@ public class CameraController : MonoBehaviour
 
 	private void UpdateCameraPosition()
 	{
-		Vector3 velocity = carRb.linearVelocity;
 		Vector3 direction = carTransform.forward;
-		if (Vector3.Dot(carTransform.forward, velocity) < -1)
+
+		if (Input.GetKey(KeyCode.DownArrow))
 		{
 			direction = -carTransform.forward;
 		}
+		else if (Input.GetKey(KeyCode.LeftArrow))
+		{
+			direction = -carTransform.right;
+		}
+		else if (Input.GetKey(KeyCode.RightArrow))
+		{
+			direction = carTransform.right;
+		}
 
 		_targetPosition = carTransform.position - direction * followDistance + Vector3.up * followHeight;
-		transform.position = Vector3.Lerp(transform.position, _targetPosition, followDamping * Time.deltaTime);
+		if (direction == carTransform.forward)
+			transform.position = Vector3.Lerp(transform.position, _targetPosition, followDamping * Time.deltaTime);
+		else
+			transform.position = Vector3.Lerp(transform.position, _targetPosition, followDamping);
 	}
 
 	private void UpdateCameraRotation()
